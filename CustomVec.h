@@ -1,5 +1,5 @@
-#ifndef CUSTOM_VEC_CUSTOMVEC_H
-#define CUSTOM_VEC_CUSTOMVEC_H
+#ifndef CUSTOMVEC_H_SENTRY
+#define CUSTOMVEC_H_SENTRY
 
 #include <cstddef>
 
@@ -86,7 +86,10 @@ void CustomVec<T>::reserve(size_t new_cap) {
 
 template <class T>
 CustomVec<T>& CustomVec<T>::operator=(const CustomVec<T> &other) {
-    delete [] begin;
+    if (this == &other) {
+        return *this;
+    }
+    delete [] begin; // deleting nullptr has no effect
     size = other.size;
     capacity = other.capacity;
     begin = new T[capacity];
@@ -117,4 +120,4 @@ void CustomVec<T>::resize(size_t new_cap) {
     end = begin + size;
 }
 
-#endif //CUSTOM_VEC_CUSTOMVEC_H
+#endif CUSTOMVEC_H_SENTRY
