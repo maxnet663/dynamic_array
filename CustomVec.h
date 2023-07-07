@@ -20,6 +20,7 @@ public:
     ~CustomVec() { delete [] begin; }
     size_t GetSize() const { return size; }
     size_t GetCapacity() const { return capacity; }
+    bool empty() const { return !begin; }
     void push_back(T elem);
     T pop_back();
     void reserve(size_t new_cap);
@@ -69,7 +70,10 @@ void CustomVec<T>::push_back(T elem) {
 
 template <class T>
 T CustomVec<T>::pop_back() {
-    //exception
+    if (empty()) {
+        std::cerr << "Array is empty\n";
+        return T(); //not the best solution, but still acceptable
+    }
     T out = *(end - 1);
     end--;
     size--;
@@ -78,10 +82,13 @@ T CustomVec<T>::pop_back() {
 
 template <class T>
 void CustomVec<T>::reserve(size_t new_cap) {
-    if (new_cap <= capacity) {
+    if (new_cap == capacity)
         return;
+    if (new_cap < capacity) {
+        std::cerr << "new_cap < current capacity. Are you sure?\n"
+            << "If you are, use resize(new_cap) fun\n";
     }
-    capacity = new_cap;
+    resize(new_cap);
 }
 
 template <class T>
@@ -102,20 +109,24 @@ CustomVec<T>& CustomVec<T>::operator=(const CustomVec<T> &other) {
 
 template <class T>
 T& CustomVec<T>::operator[](size_t index) {
-    //exception
+    //exception range check should be here
     return begin[index];
 }
 
 template <class T>
 void CustomVec<T>::resize(size_t new_cap) {
-    capacity = new_cap ? new_cap : 2;
+    capacity = new_cap ? new_cap : 2; // if new_cap == 0 then reserve 2
     T* new_array = new T[capacity];
+    //we should remember that new_cap might be < current_cap
+    //so in the copy loop is additional border checker
     if (begin) {
-        for (int i = 0; i < size; i++) {
+        // copy loop
+        for (int i = 0; i < size && i < capacity; i++) {
             new_array[i] = begin[i];
         }
         delete[] begin;
     }
+    size = size > capacity ? capacity : size; // cut off excess if necessary
     begin = new_array;
     end = begin + size;
 }
