@@ -2,6 +2,7 @@
 #define CUSTOMVEC_H_SENTRY
 
 #include <cstddef>
+#include <exception>
 
 //simple vector implementation
 
@@ -27,9 +28,7 @@ public:
     CustomVec<T> &operator=(const CustomVec<T> &other);
     T &operator[](size_t index);
     const T &operator[](size_t index) const { return begin[index]; }
-private:
     void resize(size_t new_cap);
-
 };
 
 template <class T>
@@ -84,10 +83,6 @@ template <class T>
 void CustomVec<T>::reserve(size_t new_cap) {
     if (new_cap == capacity)
         return;
-    if (new_cap < capacity) {
-        std::cerr << "new_cap < current capacity. Are you sure?\n"
-            << "If you are, use resize(new_cap) fun\n";
-    }
     resize(new_cap);
 }
 
@@ -109,8 +104,16 @@ CustomVec<T>& CustomVec<T>::operator=(const CustomVec<T> &other) {
 
 template <class T>
 T& CustomVec<T>::operator[](size_t index) {
-    //exception range check should be here
-    return begin[index];
+    try {
+        if (index > size - 1) {
+            throw std::out_of_range("index is out of range");
+        }
+        return begin[index];
+    }
+    catch (const std::exception &ex) {
+        std::cerr << ex.what() << std::endl;
+    }
+    return *(end - 1);
 }
 
 template <class T>
@@ -131,4 +134,4 @@ void CustomVec<T>::resize(size_t new_cap) {
     end = begin + size;
 }
 
-#endif CUSTOMVEC_H_SENTRY
+#endif //CUSTOMVEC_H_SENTRY
