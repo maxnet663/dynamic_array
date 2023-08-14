@@ -47,5 +47,20 @@ int main() {
         "vec4(CustomVec<double>(s, elem) using copy constructor:" << std::endl;
     CustomVec<double> vec4(CustomVec<double>(4, 3.14 / 2.7));
     print_vec_inf(vec4);
+
+    CustomVec<int> vec5(10);
+
+    for (size_t i = 0; i < vec5.GetSize(); ++i) {
+        vec5[i] = 10 - i;
+    }
+
+    std::cout << std::endl << "Sort the following array:" << std::endl;
+    print_vec_inf(vec5);
+
+    vec5.sort();
+
+    std::cout << "After sort:" << std::endl;
+    print_vec_inf(vec5);
+
     return 0;
 }
